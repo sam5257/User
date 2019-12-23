@@ -58,6 +58,10 @@ public class BusinessClass {
 
         //java regex
 
+        if(dob == null || dob.equals("")){
+            return -1;
+        }
+
         logger.info("inside getAge method");
 
         int age = 0;
