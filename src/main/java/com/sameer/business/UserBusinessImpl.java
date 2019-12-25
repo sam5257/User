@@ -3,7 +3,6 @@ import com.sameer.database.DatabaseOperations;
 import com.sameer.database.IDatabaseOperations;
 import com.sameer.model.UserInfo;
 import org.apache.log4j.Logger;
-import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
@@ -13,9 +12,9 @@ public class UserBusinessImpl implements IUserBusiness{
 
 
     private IDatabaseOperations databaseOperations;
-    final static Logger logger = Logger.getLogger(UserBusinessImpl.class);
+    private final static Logger logger = Logger.getLogger(UserBusinessImpl.class);
     public UserBusinessImpl(){
-            databaseOperations = new DatabaseOperations();
+            //databaseOperations = new DatabaseOperations();
     }
 
     public boolean saveUser(UserInfo userInfo){
@@ -28,8 +27,6 @@ public class UserBusinessImpl implements IUserBusiness{
     public ArrayList<UserInfo> retreiveUser(){
 
         ArrayList<UserInfo>  userInfoArrayList = null;
-
-
             //make operations on user
             userInfoArrayList = databaseOperations.getUsers();
 
@@ -98,5 +95,12 @@ public class UserBusinessImpl implements IUserBusiness{
     public boolean deleteUser(int id) {
 
               return databaseOperations.deleteUserData(id);
+    }
+
+    @Override
+    public void setDatabaseOperation(IDatabaseOperations databaseOperations) {
+
+        this.databaseOperations = databaseOperations;
+
     }
 }

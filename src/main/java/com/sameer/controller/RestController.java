@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 public class RestController extends HttpServlet {
 
     private IUserBusiness userBusinessImpl =new UserBusinessImpl();
-    final static Logger logger=Logger.getLogger(RestController.class);
+    private final static Logger logger=Logger.getLogger(RestController.class);
     PrintWriter printWriter = null;
     Message message = new Message();
 

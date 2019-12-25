@@ -1,5 +1,7 @@
 package com.sameer.business;
 
+import com.sameer.database.DatabaseOperations;
+import com.sameer.database.IDatabaseOperations;
 import com.sameer.model.UserInfo;
 
 import java.util.ArrayList;
@@ -28,5 +30,10 @@ public class CustomerBusinessImpl implements IUserBusiness {
     @Override
     public boolean deleteUser(int id) {
         return false;
+    }
+
+    @Override
+    public void setDatabaseOperation(IDatabaseOperations databaseOperations) {
+
     }
 }

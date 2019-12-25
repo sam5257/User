@@ -3,6 +3,7 @@ package com.sameer.controller;
 import com.sameer.business.CustomerBusinessImpl;
 import com.sameer.business.IUserBusiness;
 import com.sameer.business.UserBusinessImpl;
+import com.sameer.database.DatabaseOperations;
 import com.sameer.model.UserInfo;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -28,6 +29,7 @@ public class InsertData extends HttpServlet {
                 userBusiness = new CustomerBusinessImpl();
             }else{
                 userBusiness = new UserBusinessImpl();
+                userBusiness.setDatabaseOperation(new DatabaseOperations());
             }
 
             UserInfo userInfo = new UserInfo();

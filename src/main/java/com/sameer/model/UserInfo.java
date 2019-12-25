@@ -1,6 +1,5 @@
 package com.sameer.model;
 
-import java.util.Comparator;
 
 public class UserInfo implements Comparable {
 
