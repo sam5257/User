@@ -1,7 +1,6 @@
 package com.sameer.controller;
 
-import com.sameer.business.BusinessClass;
-import com.sameer.database.DatabaseConnection;
+import com.sameer.business.UserBusinessImpl;
 import com.sameer.model.UserInfo;
 
 import javax.servlet.ServletException;
@@ -9,14 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.*;
 import java.util.ArrayList;
 
 public class Update extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private BusinessClass businessClass = new BusinessClass();
+    private UserBusinessImpl userBusinessImpl = new UserBusinessImpl();
 
     protected void doGet(HttpServletRequest request,
                           HttpServletResponse response)
@@ -24,8 +21,8 @@ public class Update extends HttpServlet {
 
 
 
-        BusinessClass businessClass=new BusinessClass();
-        ArrayList<UserInfo> userInfoArrayList=businessClass.retreiveUser();
+        UserBusinessImpl userBusinessImpl =new UserBusinessImpl();
+        ArrayList<UserInfo> userInfoArrayList= userBusinessImpl.retreiveUser();
 
         request.setAttribute("userList",userInfoArrayList);
         request.getRequestDispatcher("/update.jsp").forward(request, response);

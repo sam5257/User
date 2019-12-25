@@ -1,32 +1,31 @@
 package com.sameer.controller;
 
-import com.sameer.business.BusinessClass;
-import com.sameer.database.DatabaseConnection;
-import com.sameer.model.UserInfo;
+import com.sameer.business.UserBusinessImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
 
-public class delete extends HttpServlet {
+import org.apache.log4j.Logger;
 
-    private BusinessClass businessClass = new BusinessClass();
+public class Delete extends HttpServlet {
+
+    private UserBusinessImpl userBusinessImpl = new UserBusinessImpl();
     Connection con = null;
     PreparedStatement st =null;
+    final static Logger logger= Logger.getLogger(Delete.class);
+
     protected void doGet(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException {
         try {
 
             int id = Integer.valueOf(request.getParameter("id"));
-            boolean isDeleted=businessClass.deleteUser(id);
+            boolean isDeleted= userBusinessImpl.deleteUser(id);
             response.sendRedirect("/User/servlet/update");
 
 
@@ -44,7 +43,7 @@ public class delete extends HttpServlet {
 
     */
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Inside delete class",e);
         }
     }
 

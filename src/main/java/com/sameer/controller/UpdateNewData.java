@@ -1,7 +1,6 @@
 package com.sameer.controller;
 
-import com.sameer.business.BusinessClass;
-import com.sameer.database.DatabaseConnection;
+import com.sameer.business.UserBusinessImpl;
 import com.sameer.model.UserInfo;
 
 import javax.servlet.ServletException;
@@ -9,15 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+
+import org.apache.log4j.Logger;
 
 public class UpdateNewData extends HttpServlet {
 
-
-    private BusinessClass businessClass = new BusinessClass();
+    final static Logger logger=Logger.getLogger(UpdateNewData.class);
+    private UserBusinessImpl userBusinessImpl = new UserBusinessImpl();
     Connection con = null;
     PreparedStatement st =null;
     protected void doPost(HttpServletRequest request,
@@ -35,7 +34,7 @@ public class UpdateNewData extends HttpServlet {
             userInfo.setDate(request.getParameter("dob"));
             userInfo.setId(Integer.valueOf(request.getParameter("id")));
 
-            boolean isUpdated=businessClass.updateUser(userInfo);
+            boolean isUpdated= userBusinessImpl.updateUser(userInfo);
             response.sendRedirect("/User/servlet/update");
 
 /*
@@ -69,7 +68,7 @@ public class UpdateNewData extends HttpServlet {
         }
 
          catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Inside UpdateNewData",e);
         }
     }
 

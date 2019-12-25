@@ -27,8 +27,18 @@
     </servlet>
     <servlet>
         <servlet-name>Delete</servlet-name>
-        <servlet-class>com.sameer.controller.delete</servlet-class>
+        <servlet-class>com.sameer.controller.Delete</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RestController</servlet-name>
+        <servlet-class>com.sameer.controller.RestController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>RestController</servlet-name>
+        <url-pattern>/servlet/rest</url-pattern>
+    </servlet-mapping>
+
     <servlet-mapping>
         <servlet-name>Insert</servlet-name>
         <url-pattern>/servlet/insert</url-pattern>

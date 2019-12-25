@@ -1,40 +1,34 @@
 package com.sameer.business;
 import com.sameer.database.DatabaseOperations;
+import com.sameer.database.IDatabaseOperations;
 import com.sameer.model.UserInfo;
 import org.apache.log4j.Logger;
-
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
+import java.util.Collections;
+
+public class UserBusinessImpl implements IUserBusiness{
 
 
-public class BusinessClass {
-
-    private DatabaseOperations databaseOperations;
-    final static Logger logger = Logger.getLogger(BusinessClass.class);
-
-    public BusinessClass(){
-        databaseOperations = new DatabaseOperations();
+    private IDatabaseOperations databaseOperations;
+    final static Logger logger = Logger.getLogger(UserBusinessImpl.class);
+    public UserBusinessImpl(){
+            databaseOperations = new DatabaseOperations();
     }
 
     public boolean saveUser(UserInfo userInfo){
-        try {
 
             //make operations on user
             return databaseOperations.insertUser(userInfo);
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     public ArrayList<UserInfo> retreiveUser(){
 
         ArrayList<UserInfo>  userInfoArrayList = null;
 
-        try {
 
             //make operations on user
             userInfoArrayList = databaseOperations.getUsers();
@@ -45,12 +39,25 @@ public class BusinessClass {
 
             }
 
-        } catch (SQLException e) {
-            logger.error("error in retrieveUser method", e);
-        }
+        Collections.sort(userInfoArrayList);
+
+      //  Collections.sort(userInfoArrayList,BusinessClass.sortUserByAge);
 
         return userInfoArrayList;
     }
+
+
+    /*
+    public static Comparator<UserInfo> sortUserByAge =new Comparator<UserInfo>()
+    {
+            public int compare (UserInfo u1,UserInfo u2)
+            {   int age1=u1.getAge();
+                int age2=u2.getAge();
+                return age1-age2;
+            }
+    };
+
+     */
 
     public int getAge(String dob) {
 
@@ -76,17 +83,20 @@ public class BusinessClass {
 
     }
 
-    public boolean updateUser(UserInfo info) throws SQLException {
+    public boolean updateUser(UserInfo info) {
         return  databaseOperations.updateUserData(info);
     }
 
 
-    public UserInfo retrieveUserWithId(int id) throws SQLException, ClassNotFoundException {
+    public UserInfo retrieveUserWithId(int id)  {
         UserInfo u=databaseOperations.retrieveSingleUser(id);
+        int age = getAge(u.getDate());
+        u.setAge(age);
         return u;
     }
 
-    public boolean deleteUser(int id) throws SQLException, ClassNotFoundException {
-        return databaseOperations.deleteUserData(id);
+    public boolean deleteUser(int id) {
+
+              return databaseOperations.deleteUserData(id);
     }
 }

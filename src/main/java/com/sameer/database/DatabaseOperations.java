@@ -2,19 +2,20 @@ package com.sameer.database;
 
 import com.sameer.model.Constants;
 import com.sameer.model.UserInfo;
+import org.apache.log4j.Logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 
-public class DatabaseOperations {
+public class DatabaseOperations implements IDatabaseOperations{
 
     Connection con = null;
     PreparedStatement st =null;
+    final static Logger logger = Logger.getLogger(DatabaseOperations.class);
 
-    public boolean insertUser(UserInfo userInfo) throws SQLException {
+    public boolean insertUser(UserInfo userInfo) {
         // Initialize the database
 
 
@@ -31,23 +32,19 @@ public class DatabaseOperations {
         st.executeUpdate();
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Inside insertUser method",e);
             return false;
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Inside insertUser method",e);
             return false;
-        }finally {
-            st.close();
-            con.close();
         }
 
         //TODO
         return true;
     }
 
-    public ArrayList<UserInfo> getUsers() throws SQLException {
-        ArrayList<UserInfo> users = new ArrayList<UserInfo>();
-        Connection con = null;
+    public ArrayList<UserInfo> getUsers()  {
+        ArrayList<UserInfo> users = new ArrayList<>();
         PreparedStatement st = null;
         try {
             con = DatabaseConnection.initializeDatabase();
@@ -64,39 +61,45 @@ public class DatabaseOperations {
             }
 
         } catch (SQLException e) {
-            e.printStackTrace();
+                logger.error("Inside getUsers method",e);
 
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            st.close();
-            con.close();
+            logger.error("Inside getUsers method",e);
         }
 
         return users;
     }
 
-    public UserInfo retrieveSingleUser(int id) throws SQLException, ClassNotFoundException {
+    public UserInfo retrieveSingleUser(int id)  {
+        UserInfo u = new UserInfo();
+        try {
 
-        UserInfo u=new UserInfo();
 
-        con = DatabaseConnection.initializeDatabase();
-        st = con.prepareStatement(Constants.SINGLE_USER_QUERY);
-        st.setInt(1,id);
+            con = DatabaseConnection.initializeDatabase();
+            st = con.prepareStatement(Constants.SINGLE_USER_QUERY);
+            st.setInt(1, id);
 
-        ResultSet rs=st.executeQuery();
-        rs.next();
-        u.setDate(rs.getString("date_of_birth"));
-        u.setEmail(rs.getString("email"));
-        u.setFirstName(rs.getString("first_name"));
-        u.setLastName(rs.getString("last_name"));
-        u.setId(rs.getInt("id"));
+            ResultSet rs = st.executeQuery();
+            rs.next();
+            u.setDate(rs.getString("date_of_birth"));
+            u.setEmail(rs.getString("email"));
+            u.setFirstName(rs.getString("first_name"));
+            u.setLastName(rs.getString("last_name"));
+            u.setId(rs.getInt("id"));
 
+
+        }
+        catch (SQLException e) {
+            logger.error("Inside retrieveSingleUser method",e);
+
+        } catch (ClassNotFoundException e) {
+            logger.error("Inside retrieveSingleUser method",e);
+
+        }
         return u;
-
     }
 
-    public boolean updateUserData(UserInfo userInfo) throws  SQLException{
+    public boolean updateUserData(UserInfo userInfo) {
 
         try {
             con = DatabaseConnection.initializeDatabase();
@@ -113,25 +116,30 @@ public class DatabaseOperations {
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            logger.error("Inside updateUserData method",e);
             return false;
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            logger.error("Inside updateUserData method",e);
             return false;
-        } finally {
-            st.close();
-            con.close();
         }
         return true;
     }
+    public boolean deleteUserData(int id)  {
+        try {
+            con = DatabaseConnection.initializeDatabase();
 
-    public boolean deleteUserData(int id) throws SQLException, ClassNotFoundException {
-        con = DatabaseConnection.initializeDatabase();
-
-        st = con.prepareStatement(Constants.DELETE_QUERY);
-        st.setInt(1, id);
-        st.executeUpdate();
+            st = con.prepareStatement(Constants.DELETE_QUERY);
+            st.setInt(1, id);
+            st.executeUpdate();
+        }
+        catch (SQLException e) {
+            logger.error("Inside deleteUserData method",e);
+            return false;
+        }
+        catch (ClassNotFoundException e)
+        {
+            logger.error("inside deleteUserData method",e);
+        }
         return true;
-
     }
 }

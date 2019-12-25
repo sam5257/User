@@ -1,6 +1,8 @@
 package com.sameer.model;
 
-public class UserInfo {
+import java.util.Comparator;
+
+public class UserInfo implements Comparable {
 
     private String firstName;
     private String lastName;
@@ -55,5 +57,13 @@ public class UserInfo {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+
+
+    @Override
+    public int compareTo(Object o) {
+        int age1=((UserInfo)o).getAge();
+        return this.age-age1;
     }
 }

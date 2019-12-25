@@ -1,25 +1,34 @@
 package com.sameer.controller;
 
-import com.sameer.business.BusinessClass;
+import com.sameer.business.CustomerBusinessImpl;
+import com.sameer.business.IUserBusiness;
+import com.sameer.business.UserBusinessImpl;
 import com.sameer.model.UserInfo;
 import java.io.IOException;
-import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.log4j.Logger;
 
 // Servlet Name
 public class InsertData extends HttpServlet {
     private static final long serialVersionUID = 1L;
+    final static Logger logger=Logger.getLogger(InsertData.class);
 
-    private BusinessClass businessClass = new BusinessClass();
+    private IUserBusiness userBusiness;
 
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException
     {
         try {
+              String userType = request.getParameter("userType");
+            if(userType!=null && userType.equalsIgnoreCase("Customer")){
+                userBusiness = new CustomerBusinessImpl();
+            }else{
+                userBusiness = new UserBusinessImpl();
+            }
 
             UserInfo userInfo = new UserInfo();
 
@@ -28,18 +37,11 @@ public class InsertData extends HttpServlet {
             userInfo.setEmail(request.getParameter("email"));
             userInfo.setDate(request.getParameter("dob"));
 
-            boolean isInserted = businessClass.saveUser(userInfo);
-
-            if(isInserted){
-
-                request.getRequestDispatcher("inserted.jsp").forward(request, response);
-            }else {
-
-            }
+            boolean isInserted = userBusiness.saveUser(userInfo);
 
         }
         catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Inside InsertData method");
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.sameer.controller;
 
-import com.sameer.business.BusinessClass;
-import com.sameer.database.DatabaseConnection;
+import com.sameer.business.UserBusinessImpl;
 import com.sameer.model.UserInfo;
 
 import javax.servlet.ServletException;
@@ -9,16 +8,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.ArrayList;
+
+import org.apache.log4j.Logger;
 
 public class UpdateValue extends HttpServlet {
 
-    private BusinessClass businessClass = new BusinessClass();
+    private UserBusinessImpl userBusinessImpl = new UserBusinessImpl();
+    final static Logger logger=Logger.getLogger(UpdateValue.class);
 
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response)
@@ -27,8 +23,8 @@ public class UpdateValue extends HttpServlet {
         try {
             int id = Integer.valueOf(request.getParameter("id"));
 
-            BusinessClass businessClass=new BusinessClass();
-            UserInfo userInfo=businessClass.retrieveUserWithId(id);
+            UserBusinessImpl userBusinessImpl =new UserBusinessImpl();
+            UserInfo userInfo= userBusinessImpl.retrieveUserWithId(id);
 
             request.setAttribute("user",userInfo);
             request.getRequestDispatcher("/updatevalue.jsp").forward(request, response);
@@ -73,8 +69,7 @@ public class UpdateValue extends HttpServlet {
         }
 
         catch (Exception e) {
-
-            e.printStackTrace();
+logger.error("Inside UpdateValue class",e);
         }
     }
 
