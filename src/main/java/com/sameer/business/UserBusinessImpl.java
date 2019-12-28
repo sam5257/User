@@ -1,17 +1,20 @@
 package com.sameer.business;
 
 import com.sameer.database.DatabaseOperations;
+import com.sameer.database.HibernateDatabaseOperations;
 import com.sameer.database.IDatabaseOperations;
 import com.sameer.dto.UserInfoDTO;
 import com.sameer.exception.UserException;
 import com.sameer.model.UserInfo;
 import org.apache.log4j.Logger;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
 
+@Component
 public class UserBusinessImpl implements IUserBusiness {
 
 
@@ -19,9 +22,10 @@ public class UserBusinessImpl implements IUserBusiness {
     private final static Logger logger = Logger.getLogger(UserBusinessImpl.class);
     IValidator validator = new ValidatorImpl();
 
-    public UserBusinessImpl() {
-        databaseOperations = new DatabaseOperations();
+    UserBusinessImpl(){
+        databaseOperations = new HibernateDatabaseOperations();
     }
+
 
     public boolean saveUser(UserInfo userInfo) throws UserException {
         // UserInfoDTO userInfoDTO=new UserInfoDTO();
@@ -123,10 +127,10 @@ public class UserBusinessImpl implements IUserBusiness {
         return databaseOperations.deleteUserData(id);
     }
 
-    @Override
+
     public void setDatabaseOperation(IDatabaseOperations databaseOperations) {
 
-        this.databaseOperations = databaseOperations;
+    //    this.databaseOperations = databaseOperations;
 
     }
 }

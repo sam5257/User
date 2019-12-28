@@ -11,10 +11,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class Delete extends HttpServlet {
 
-    private UserBusinessImpl userBusinessImpl = new UserBusinessImpl();
+    private UserBusinessImpl userBusinessImpl;
     Connection con = null;
     PreparedStatement st =null;
     final static Logger logger= Logger.getLogger(Delete.class);
@@ -25,6 +27,10 @@ public class Delete extends HttpServlet {
         try {
 
             int id = Integer.valueOf(request.getParameter("id"));
+            ApplicationContext context = new ClassPathXmlApplicationContext(
+                    "spring-module.xml");
+
+            userBusinessImpl = (UserBusinessImpl) context.getBean("userBusinessImpl");
             boolean isDeleted= userBusinessImpl.deleteUser(id);
             response.sendRedirect("/User/servlet/update");
 

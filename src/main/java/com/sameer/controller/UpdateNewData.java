@@ -12,11 +12,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class UpdateNewData extends HttpServlet {
 
     final static Logger logger=Logger.getLogger(UpdateNewData.class);
-    private UserBusinessImpl userBusinessImpl = new UserBusinessImpl();
+    private UserBusinessImpl userBusinessImpl;
     Connection con = null;
     PreparedStatement st =null;
     protected void doPost(HttpServletRequest request,
@@ -31,6 +33,11 @@ public class UpdateNewData extends HttpServlet {
             userInfo.setEmail(request.getParameter("email"));
             userInfo.setDate(request.getParameter("dob"));
             userInfo.setId(Integer.valueOf(request.getParameter("id")));
+
+            ApplicationContext context = new ClassPathXmlApplicationContext(
+                    "spring-module.xml");
+
+            userBusinessImpl= (UserBusinessImpl) context.getBean("userBusinessImpl");
 
             boolean isUpdated= userBusinessImpl.updateUser(userInfo);
             response.sendRedirect("/User/servlet/update");

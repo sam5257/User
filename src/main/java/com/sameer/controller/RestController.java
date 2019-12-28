@@ -17,10 +17,12 @@ import java.io.PrintWriter;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class RestController extends HttpServlet {
 
-    private IUserBusiness userBusinessImpl = new UserBusinessImpl();
+    private IUserBusiness userBusinessImpl;
     private final static Logger logger = Logger.getLogger(RestController.class);
     PrintWriter printWriter = null;
     Message message = new Message();
@@ -30,7 +32,10 @@ public class RestController extends HttpServlet {
         Gson g = new Gson();
         try {
             String body = getBody(request);
+            ApplicationContext context = new ClassPathXmlApplicationContext(
+                    "spring-module.xml");
 
+            userBusinessImpl= (UserBusinessImpl) context.getBean("userBusinessImpl");
 
             printWriter = response.getWriter();
             UserInfo userInfo = g.fromJson(body, UserInfo.class);
@@ -63,6 +68,10 @@ public class RestController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.valueOf(request.getParameter("id"));
         try {
+            ApplicationContext context = new ClassPathXmlApplicationContext(
+                    "spring-module.xml");
+
+            userBusinessImpl= (UserBusinessImpl) context.getBean("userBusinessImpl");
             UserInfo userInfo = userBusinessImpl.retrieveUserWithId(id);
             Gson gson = new Gson();
             printWriter = response.getWriter();
@@ -76,7 +85,12 @@ public class RestController extends HttpServlet {
 
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.valueOf(request.getParameter("id"));
+        ApplicationContext context = new ClassPathXmlApplicationContext(
+                "spring-module.xml");
+
+        userBusinessImpl= (UserBusinessImpl) context.getBean("userBusinessImpl");
         try {
+
             boolean isDeleted = userBusinessImpl.deleteUser(id);
             Gson gson = new Gson();
             if (isDeleted) {
@@ -100,6 +114,10 @@ public class RestController extends HttpServlet {
     protected void doPut(HttpServletRequest request, HttpServletResponse response) {
         String body = getBody(request);
         Gson gson = new Gson();
+        ApplicationContext context = new ClassPathXmlApplicationContext(
+                "spring-module.xml");
+
+        userBusinessImpl= (UserBusinessImpl) context.getBean("userBusinessImpl");
         UserInfo userInfo = gson.fromJson(body, UserInfo.class);
         try {
             boolean isUpdated = userBusinessImpl.updateUser(userInfo);

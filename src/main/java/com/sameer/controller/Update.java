@@ -4,6 +4,8 @@ import com.sameer.business.IUserBusiness;
 import com.sameer.business.UserBusinessImpl;
 import com.sameer.database.DatabaseOperations;
 import com.sameer.model.UserInfo;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,15 +17,23 @@ import java.util.ArrayList;
 public class Update extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private IUserBusiness userBusinessImpl = new UserBusinessImpl();
+    private IUserBusiness userBusinessImpl ;
 
     protected void doGet(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException{
 
+        ApplicationContext context = new ClassPathXmlApplicationContext(
+                "spring-module.xml");
 
-        userBusinessImpl.setDatabaseOperation(new DatabaseOperations());
+        userBusinessImpl = (UserBusinessImpl) context.getBean("userBusinessImpl");
+
+     /*   userBusinessImpl.setDatabaseOperation(new DatabaseOperations());
+
+      */
         ArrayList<UserInfo> userInfoArrayList= userBusinessImpl.retreiveUser();
+
+
 
         request.setAttribute("userList",userInfoArrayList);
         request.getRequestDispatcher("/update.jsp").forward(request, response);

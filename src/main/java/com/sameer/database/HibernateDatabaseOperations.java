@@ -6,9 +6,11 @@ import com.sameer.model.UserInfo;
 import com.sameer.util.HibernateUtil;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
+@Component
 public class HibernateDatabaseOperations implements IDatabaseOperations {
 
     private static Session session;

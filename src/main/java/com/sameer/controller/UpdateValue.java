@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class UpdateValue extends HttpServlet {
 
-    private UserBusinessImpl userBusinessImpl = new UserBusinessImpl();
+    private UserBusinessImpl userBusinessImpl ;
     final static Logger logger=Logger.getLogger(UpdateValue.class);
 
     protected void doGet(HttpServletRequest request,
@@ -22,8 +24,11 @@ public class UpdateValue extends HttpServlet {
 
         try {
             int id = Integer.valueOf(request.getParameter("id"));
+            ApplicationContext context = new ClassPathXmlApplicationContext(
+                    "spring-module.xml");
 
-            UserBusinessImpl userBusinessImpl =new UserBusinessImpl();
+            userBusinessImpl = (UserBusinessImpl) context.getBean("userBusinessImpl");
+
             UserInfo userInfo= userBusinessImpl.retrieveUserWithId(id);
 
             request.setAttribute("user",userInfo);

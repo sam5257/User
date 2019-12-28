@@ -1,10 +1,7 @@
 package com.sameer.controller;
 
-import com.sameer.business.CustomerBusinessImpl;
 import com.sameer.business.IUserBusiness;
 import com.sameer.business.UserBusinessImpl;
-import com.sameer.database.DatabaseOperations;
-import com.sameer.database.HibernateDatabaseOperations;
 import com.sameer.exception.UserException;
 import com.sameer.model.UserInfo;
 
@@ -15,7 +12,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sameer.util.AppConfig;
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 // Servlet Name
 public class InsertData extends HttpServlet {
@@ -28,10 +30,16 @@ public class InsertData extends HttpServlet {
 
     private PrintWriter printWriter = null;
 
+    private boolean useJdbc=true;
+
+
+
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException {
         try {
+
+            /*
             String userType = request.getParameter("userType");
             if (userType != null && userType.equalsIgnoreCase("Customer")) {
                 userBusiness = new CustomerBusinessImpl();
@@ -43,6 +51,23 @@ public class InsertData extends HttpServlet {
                     userBusiness.setDatabaseOperation(new DatabaseOperations());
                 }
 
+            }
+
+             */
+
+            if(!useHibernate) {
+
+                ApplicationContext context = new ClassPathXmlApplicationContext(
+                        "spring-module.xml");
+
+                userBusiness = (UserBusinessImpl) context.getBean("userBusinessImpl");
+
+            }
+            else {
+
+                AbstractApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+                userBusiness = (UserBusinessImpl) context.getBean("userBusinessImpl");
             }
 
             UserInfo userInfo = new UserInfo();

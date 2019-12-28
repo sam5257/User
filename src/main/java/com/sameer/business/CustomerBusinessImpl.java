@@ -32,8 +32,5 @@ public class CustomerBusinessImpl implements IUserBusiness {
         return false;
     }
 
-    @Override
-    public void setDatabaseOperation(IDatabaseOperations databaseOperations) {
 
-    }
 }

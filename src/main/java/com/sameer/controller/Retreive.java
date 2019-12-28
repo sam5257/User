@@ -4,6 +4,9 @@ import com.sameer.business.IUserBusiness;
 import com.sameer.business.UserBusinessImpl;
 import com.sameer.database.DatabaseOperations;
 import com.sameer.model.UserInfo;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -13,15 +16,16 @@ import java.util.ArrayList;
 
 public class Retreive extends HttpServlet {
 
-
+   private IUserBusiness userBusinessImpl;
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException {
 
+        ApplicationContext context = new ClassPathXmlApplicationContext(
+                "spring-module.xml");
 
+        userBusinessImpl = (UserBusinessImpl) context.getBean("userBusinessImpl");
 
-        IUserBusiness userBusinessImpl =new UserBusinessImpl();
-        userBusinessImpl.setDatabaseOperation(new DatabaseOperations());
         ArrayList<UserInfo> userInfoArrayList= userBusinessImpl.retreiveUser();
 
         request.setAttribute("userList",userInfoArrayList);

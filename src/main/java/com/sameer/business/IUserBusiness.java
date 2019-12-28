@@ -19,5 +19,4 @@ public interface IUserBusiness {
 
     public boolean deleteUser(int id);
 
-    void setDatabaseOperation(IDatabaseOperations databaseOperations);
 }
