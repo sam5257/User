@@ -20,10 +20,9 @@ public class DatabaseOperations implements IDatabaseOperations{
 
 
         try {
+
             con = DatabaseConnection.initializeDatabase();
-
          st = con.prepareStatement(Constants.INSERT_QUERY);
-
         st.setString(1, userInfo.getFirstName());
         st.setString(2, userInfo.getLastName());
         st.setString(3, userInfo.getEmail());
@@ -124,6 +123,7 @@ public class DatabaseOperations implements IDatabaseOperations{
         }
         return true;
     }
+
     public boolean deleteUserData(int id)  {
         try {
             con = DatabaseConnection.initializeDatabase();

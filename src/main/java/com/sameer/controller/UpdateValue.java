@@ -29,10 +29,6 @@ public class UpdateValue extends HttpServlet {
             request.setAttribute("user",userInfo);
             request.getRequestDispatcher("/updatevalue.jsp").forward(request, response);
 
-
-
-
-
     /*
             PrintWriter out = response.getWriter();
             Connection con = DatabaseConnection.initializeDatabase();

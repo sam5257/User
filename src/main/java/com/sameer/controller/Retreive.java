@@ -1,6 +1,8 @@
 package com.sameer.controller;
 
+import com.sameer.business.IUserBusiness;
 import com.sameer.business.UserBusinessImpl;
+import com.sameer.database.DatabaseOperations;
 import com.sameer.model.UserInfo;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -18,7 +20,8 @@ public class Retreive extends HttpServlet {
 
 
 
-        UserBusinessImpl userBusinessImpl =new UserBusinessImpl();
+        IUserBusiness userBusinessImpl =new UserBusinessImpl();
+        userBusinessImpl.setDatabaseOperation(new DatabaseOperations());
         ArrayList<UserInfo> userInfoArrayList= userBusinessImpl.retreiveUser();
 
         request.setAttribute("userList",userInfoArrayList);

@@ -1,13 +1,23 @@
 package com.sameer.model;
 
+import javax.persistence.*;
 
+@Entity
+@Table(name="user")
 public class UserInfo implements Comparable {
 
+    @Column(name="first_name")
     private String firstName;
+    @Column(name="last_name")
     private String lastName;
+    @Column(name = "email")
     private String email;
+    @Column(name = "date_of_birth")
     private String date;
+    @Transient
     private int age;
+    @Id
+    @Column(name = "id")
     private int id;
 
     public int getId() {
@@ -57,8 +67,6 @@ public class UserInfo implements Comparable {
     public void setAge(int age) {
         this.age = age;
     }
-
-
 
     @Override
     public int compareTo(Object o) {

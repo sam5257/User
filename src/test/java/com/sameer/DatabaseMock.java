@@ -1,5 +1,6 @@
-package com.sameer.database;
+package com.sameer;
 
+import com.sameer.database.IDatabaseOperations;
 import com.sameer.model.UserInfo;
 
 import java.util.ArrayList;

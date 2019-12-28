@@ -1,7 +1,9 @@
 package com.sameer.controller;
+
 import com.google.gson.Gson;
 import com.sameer.business.IUserBusiness;
 import com.sameer.business.UserBusinessImpl;
+import com.sameer.exception.UserException;
 import com.sameer.model.Message;
 import com.sameer.model.UserInfo;
 
@@ -13,54 +15,61 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
 
 public class RestController extends HttpServlet {
 
-    private IUserBusiness userBusinessImpl =new UserBusinessImpl();
-    private final static Logger logger=Logger.getLogger(RestController.class);
+    private IUserBusiness userBusinessImpl = new UserBusinessImpl();
+    private final static Logger logger = Logger.getLogger(RestController.class);
     PrintWriter printWriter = null;
     Message message = new Message();
 
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response) {
-        String body = getBody(request);
-
-        Gson g=new Gson();
-        UserInfo userInfo=g.fromJson(body,UserInfo.class);
-        boolean isInserted = userBusinessImpl.saveUser(userInfo);
-
-        if(isInserted){
-
-            message.setMessage("user info saved");
-
-        }else {
-
-            message.setMessage("user info not saved");
-
-        }
+        Gson g = new Gson();
         try {
-            printWriter = response.getWriter();
-        } catch (IOException e) {
-            logger.error("Inside doPost method ",e);
-        }
-        printWriter.print(g.toJson(message));
+            String body = getBody(request);
 
+
+            printWriter = response.getWriter();
+            UserInfo userInfo = g.fromJson(body, UserInfo.class);
+            boolean isInserted = userBusinessImpl.saveUser(userInfo);
+
+            if (isInserted) {
+
+                message.setMessage("user info saved");
+
+            } else {
+
+                message.setMessage("user info not saved");
+
+            }
+
+
+            printWriter.print(g.toJson(message));
+
+        } catch (UserException e) {
+            message.setMessage(e.getMessage());
+
+            printWriter.print(g.toJson(message));
+
+        } catch (IOException e) {
+            logger.error("Inside doPost method ", e);
+        }
     }
 
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)  {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.valueOf(request.getParameter("id"));
         try {
-            UserInfo userInfo= userBusinessImpl.retrieveUserWithId(id);
-            Gson gson=new Gson();
-            printWriter=response.getWriter();
+            UserInfo userInfo = userBusinessImpl.retrieveUserWithId(id);
+            Gson gson = new Gson();
+            printWriter = response.getWriter();
             printWriter.print(gson.toJson(userInfo));
 
-        }
-        catch (IOException e)
-        {
-            logger.error("Inside doGet method ",e);
+        } catch (IOException e) {
+            logger.error("Inside doGet method ", e);
         }
     }
 
@@ -68,32 +77,30 @@ public class RestController extends HttpServlet {
     protected void doDelete(HttpServletRequest request, HttpServletResponse response) {
         int id = Integer.valueOf(request.getParameter("id"));
         try {
-            boolean isDeleted= userBusinessImpl.deleteUser(id);
-            Gson gson=new Gson();
-            if(isDeleted){
+            boolean isDeleted = userBusinessImpl.deleteUser(id);
+            Gson gson = new Gson();
+            if (isDeleted) {
 
                 message.setMessage("user info deleted successfully");
 
-            }else {
+            } else {
 
                 message.setMessage("user info not deleted");
 
             }
-            printWriter=response.getWriter();
+            printWriter = response.getWriter();
             printWriter.print(gson.toJson(message));
 
-        }
-        catch (IOException e)
-        {
-            logger.error("Inside doDelete method",e);
+        } catch (IOException e) {
+            logger.error("Inside doDelete method", e);
         }
     }
 
 
     protected void doPut(HttpServletRequest request, HttpServletResponse response) {
-        String body=getBody(request);
-        Gson gson=new Gson();
-        UserInfo userInfo=gson.fromJson(body,UserInfo.class);
+        String body = getBody(request);
+        Gson gson = new Gson();
+        UserInfo userInfo = gson.fromJson(body, UserInfo.class);
         try {
             boolean isUpdated = userBusinessImpl.updateUser(userInfo);
 
@@ -109,8 +116,8 @@ public class RestController extends HttpServlet {
             printWriter = response.getWriter();
             printWriter.print(gson.toJson(message));
 
-        } catch (IOException e)
-        {}
+        } catch (IOException e) {
+        }
 
 
     }

@@ -26,8 +26,6 @@ public class UpdateNewData extends HttpServlet {
 
             UserInfo userInfo =new UserInfo();
 
-
-
             userInfo.setFirstName(request.getParameter("fname"));
             userInfo.setLastName(request.getParameter("lname"));
             userInfo.setEmail(request.getParameter("email"));

@@ -1,6 +1,8 @@
 package com.sameer.database;
 
+import com.sameer.dto.UserInfoDTO;
 import com.sameer.model.UserInfo;
+
 import java.util.ArrayList;
 
 public interface IDatabaseOperations {

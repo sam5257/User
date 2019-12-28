@@ -1,6 +1,8 @@
 package com.sameer.controller;
 
+import com.sameer.business.IUserBusiness;
 import com.sameer.business.UserBusinessImpl;
+import com.sameer.database.DatabaseOperations;
 import com.sameer.model.UserInfo;
 
 import javax.servlet.ServletException;
@@ -13,15 +15,14 @@ import java.util.ArrayList;
 public class Update extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    private UserBusinessImpl userBusinessImpl = new UserBusinessImpl();
+    private IUserBusiness userBusinessImpl = new UserBusinessImpl();
 
     protected void doGet(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException{
 
 
-
-        UserBusinessImpl userBusinessImpl =new UserBusinessImpl();
+        userBusinessImpl.setDatabaseOperation(new DatabaseOperations());
         ArrayList<UserInfo> userInfoArrayList= userBusinessImpl.retreiveUser();
 
         request.setAttribute("userList",userInfoArrayList);
