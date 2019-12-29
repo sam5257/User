@@ -8,4 +8,6 @@ public interface IValidator {
     boolean lengthValidator(UserInfo userInfo);
     boolean emptyFieldValidator(UserInfo userInfo);
     boolean isValidEmail(UserInfo userInfo);
+
+    boolean checkDuplicate(UserInfo userInfo);
 }

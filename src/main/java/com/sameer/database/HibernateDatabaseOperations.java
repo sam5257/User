@@ -4,13 +4,14 @@ import com.sameer.business.UserBusinessImpl;
 import com.sameer.dto.UserInfoDTO;
 import com.sameer.model.UserInfo;
 import com.sameer.util.HibernateUtil;
+import com.sameer.util.Response;
 import org.apache.log4j.Logger;
 import org.hibernate.Session;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 
-@Component
+//@Component("databaseOperations")
 public class HibernateDatabaseOperations implements IDatabaseOperations {
 
     private static Session session;
@@ -23,7 +24,7 @@ public class HibernateDatabaseOperations implements IDatabaseOperations {
     private final static Logger logger = Logger.getLogger(HibernateDatabaseOperations.class);
 
 
-    public boolean insertUser(UserInfo userInfo) {
+    public Response insertUser(UserInfo userInfo) {
         long start = System.currentTimeMillis();
         session = HibernateUtil.getSessionFactory().openSession();
         session.beginTransaction();
@@ -32,7 +33,7 @@ public class HibernateDatabaseOperations implements IDatabaseOperations {
         long end = System.currentTimeMillis();
 
         logger.info(end - start + "Time taken");
-        return true;
+        return Response.TRUE;
     }
 
 

@@ -1,6 +1,7 @@
 package com.sameer.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name="user")
@@ -73,4 +74,31 @@ public class UserInfo implements Comparable {
         int age1=((UserInfo)o).getAge();
         return this.age-age1;
     }
+
+    @Override
+    public String toString() {
+        return "UserInfo{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", date='" + date + '\'' +
+                ", age=" + age +
+                ", id=" + id +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserInfo)) return false;
+        UserInfo userInfo = (UserInfo) o;
+        return getEmail().equals(userInfo.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail());
+    }
+
+
 }

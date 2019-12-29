@@ -2,24 +2,22 @@ package com.sameer.database;
 
 import com.sameer.model.Constants;
 import com.sameer.model.UserInfo;
+import com.sameer.util.Response;
 import org.apache.log4j.Logger;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.springframework.stereotype.Component;
+
+import java.sql.*;
 import java.util.ArrayList;
 
-
+@Component
 public class DatabaseOperations implements IDatabaseOperations{
 
     Connection con = null;
     PreparedStatement st =null;
     final static Logger logger = Logger.getLogger(DatabaseOperations.class);
 
-    public boolean insertUser(UserInfo userInfo) {
+    public Response insertUser(UserInfo userInfo) {
         // Initialize the database
-
-
         try {
 
             con = DatabaseConnection.initializeDatabase();
@@ -31,16 +29,25 @@ public class DatabaseOperations implements IDatabaseOperations{
 
         st.executeUpdate();
 
-        } catch (SQLException e) {
+        }
+        catch (SQLIntegrityConstraintViolationException e)
+        {
+            logger.error("Duplicate Email .",e);
+            if(e.getMessage().contains("email"))
+                return Response.INVALID_EMAIL;
+            else
+                return Response.FALSE;
+        }
+        catch (SQLException e) {
             logger.error("Inside insertUser method",e);
-            return false;
+            return Response.FALSE;
         } catch (ClassNotFoundException e) {
             logger.error("Inside insertUser method",e);
-            return false;
+            return Response.FALSE;
         }
 
         //TODO
-        return true;
+        return Response.TRUE;
     }
 
     public ArrayList<UserInfo> getUsers()  {

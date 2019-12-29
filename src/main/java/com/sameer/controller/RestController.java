@@ -7,15 +7,14 @@ import com.sameer.exception.UserException;
 import com.sameer.model.Message;
 import com.sameer.model.UserInfo;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
+import com.sameer.util.Response;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -39,13 +38,18 @@ public class RestController extends HttpServlet {
 
             printWriter = response.getWriter();
             UserInfo userInfo = g.fromJson(body, UserInfo.class);
-            boolean isInserted = userBusinessImpl.saveUser(userInfo);
+            Response userResponse = userBusinessImpl.saveUser(userInfo);
 
-            if (isInserted) {
+            if (userResponse==Response.TRUE) {
 
                 message.setMessage("user info saved");
 
-            } else {
+            }
+            else if(userResponse==Response.INVALID_EMAIL)
+            {
+                message.setMessage("Duplicate Email");
+            }
+            else {
 
                 message.setMessage("user info not saved");
 

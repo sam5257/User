@@ -1,38 +1,62 @@
 package com.sameer.business;
 
-import com.sameer.database.DatabaseOperations;
-import com.sameer.database.HibernateDatabaseOperations;
 import com.sameer.database.IDatabaseOperations;
-import com.sameer.dto.UserInfoDTO;
 import com.sameer.exception.UserException;
 import com.sameer.model.UserInfo;
+import com.sameer.util.Response;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class UserBusinessImpl implements IUserBusiness {
 
 
-    private IDatabaseOperations databaseOperations;
     private final static Logger logger = Logger.getLogger(UserBusinessImpl.class);
-    IValidator validator = new ValidatorImpl();
 
-    UserBusinessImpl(){
-        databaseOperations = new HibernateDatabaseOperations();
+    private IValidator validator;
+
+    private IDatabaseOperations databaseOperations;
+
+    private CacheManager cacheManager;
+
+    @Autowired
+    public void setDatabaseOperation(IDatabaseOperations databaseOperations) {
+        this.databaseOperations = databaseOperations;
+    }
+
+    @Autowired
+    public void setValidator(IValidator validator) {
+        this.validator = validator;
+    }
+
+    @Autowired
+    public void setcacheManager(CacheManager cacheManager)
+    {
+        this.cacheManager=cacheManager;
     }
 
 
-    public boolean saveUser(UserInfo userInfo) throws UserException {
+
+
+    public Response saveUser(UserInfo userInfo) throws UserException {
         // UserInfoDTO userInfoDTO=new UserInfoDTO();
         userInfo.setFirstName(userInfo.getFirstName());
         userInfo.setLastName(userInfo.getLastName());
         userInfo.setEmail(userInfo.getEmail());
         userInfo.setDate(userInfo.getDate());
+
+        if(validator.checkDuplicate(userInfo))
+        {
+
+        }
 
         //if validator returns false the throw new UserException
         if (validator.lengthValidator(userInfo)) {   //make operations on user
@@ -51,7 +75,8 @@ public class UserBusinessImpl implements IUserBusiness {
             throw new UserException("Email not valid");
         }
 
-        return databaseOperations.insertUser(userInfo);
+
+        return  databaseOperations.insertUser(userInfo);
     }
 
     public ArrayList<UserInfo> retreiveUser() {
@@ -116,21 +141,26 @@ public class UserBusinessImpl implements IUserBusiness {
 
 
     public UserInfo retrieveUserWithId(int id) {
-        UserInfo u = databaseOperations.retrieveSingleUser(id);
-        int age = getAge(u.getDate());
-        u.setAge(age);
-        return u;
+        UserInfo userInfo;
+        boolean available=cacheManager.checkCache(id);
+        if (available)
+        {  userInfo=cacheManager.returnCache(id);
+
+        }
+        else
+            {
+            userInfo = databaseOperations.retrieveSingleUser(id);
+            cacheManager.insertCache(userInfo);
+        }
+        int age = getAge(userInfo.getDate());
+        userInfo.setAge(age);
+        return userInfo;
     }
+
+
 
     public boolean deleteUser(int id) {
 
         return databaseOperations.deleteUserData(id);
-    }
-
-
-    public void setDatabaseOperation(IDatabaseOperations databaseOperations) {
-
-    //    this.databaseOperations = databaseOperations;
-
     }
 }

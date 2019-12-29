@@ -1,10 +1,13 @@
 package com.sameer.business;
 
 import com.sameer.model.UserInfo;
+import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.regex.Pattern;
 
+
+@Component("validator")
 public class ValidatorImpl  implements  IValidator{
     @Override
     public boolean lengthValidator(UserInfo userInfo) {
@@ -44,6 +47,12 @@ public class ValidatorImpl  implements  IValidator{
         if (email == null)
             return false;
         return pat.matcher(email).matches();
+    }
+
+    @Override
+    public boolean checkDuplicate(UserInfo userInfo) {
+
+        return false;
     }
 
 }

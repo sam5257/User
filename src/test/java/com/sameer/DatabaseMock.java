@@ -2,13 +2,14 @@ package com.sameer;
 
 import com.sameer.database.IDatabaseOperations;
 import com.sameer.model.UserInfo;
+import com.sameer.util.Response;
 
 import java.util.ArrayList;
 
 public class DatabaseMock implements IDatabaseOperations {
     @Override
-    public boolean insertUser(UserInfo userInfo) {
-        return false;
+    public Response insertUser(UserInfo userInfo) {
+        return Response.FALSE;
     }
 
     @Override

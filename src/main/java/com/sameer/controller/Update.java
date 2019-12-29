@@ -2,7 +2,6 @@ package com.sameer.controller;
 
 import com.sameer.business.IUserBusiness;
 import com.sameer.business.UserBusinessImpl;
-import com.sameer.database.DatabaseOperations;
 import com.sameer.model.UserInfo;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;

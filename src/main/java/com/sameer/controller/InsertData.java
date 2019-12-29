@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.sameer.util.AppConfig;
+import com.sameer.util.Response;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -25,13 +26,20 @@ public class InsertData extends HttpServlet {
     private final static Logger logger = Logger.getLogger(InsertData.class);
 
     private IUserBusiness userBusiness;
-
-    private boolean useHibernate = true;
-
     private PrintWriter printWriter = null;
 
-    private boolean useJdbc=true;
+    private static boolean useHibernate=true;
+    private static ApplicationContext context;
 
+    static {
+
+        if (!useHibernate) {
+            context = new ClassPathXmlApplicationContext("spring-module.xml");
+        } else {
+            context = new AnnotationConfigApplicationContext(AppConfig.class);
+        }
+
+    }
 
 
     protected void doPost(HttpServletRequest request,
@@ -55,20 +63,9 @@ public class InsertData extends HttpServlet {
 
              */
 
-            if(!useHibernate) {
+            userBusiness = (UserBusinessImpl) context.getBean("userBusinessImpl");
 
-                ApplicationContext context = new ClassPathXmlApplicationContext(
-                        "spring-module.xml");
 
-                userBusiness = (UserBusinessImpl) context.getBean("userBusinessImpl");
-
-            }
-            else {
-
-                AbstractApplicationContext context = new AnnotationConfigApplicationContext(AppConfig.class);
-
-                userBusiness = (UserBusinessImpl) context.getBean("userBusinessImpl");
-            }
 
             UserInfo userInfo = new UserInfo();
 
@@ -77,17 +74,24 @@ public class InsertData extends HttpServlet {
             userInfo.setEmail(request.getParameter("email"));
             userInfo.setDate(request.getParameter("dob"));
 
-            boolean isInserted = userBusiness.saveUser(userInfo);
+            Response userResponse = userBusiness.saveUser(userInfo);
 
             printWriter = response.getWriter();
 
-            if (isInserted) {
+
+            if (userResponse==Response.TRUE) {
 
                 printWriter.print("user info saved");
 
-            } else {
+            }
+            else if(userResponse==Response.INVALID_EMAIL)
+            {
+                printWriter.print("Duplicate Email");
+            }
 
-                printWriter.print("user info not saved");
+            else {
+
+                printWriter.print("User not saved.");
 
             }
 

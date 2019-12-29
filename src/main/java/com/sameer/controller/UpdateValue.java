@@ -9,8 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import com.sameer.util.AppConfig;
 import org.apache.log4j.Logger;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class UpdateValue extends HttpServlet {
@@ -18,14 +20,20 @@ public class UpdateValue extends HttpServlet {
     private UserBusinessImpl userBusinessImpl ;
     final static Logger logger=Logger.getLogger(UpdateValue.class);
 
+    private static ApplicationContext context;
+
+    static
+    {
+        context = new AnnotationConfigApplicationContext(AppConfig.class);
+
+    }
+
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response)
             throws ServletException, IOException {
 
         try {
             int id = Integer.valueOf(request.getParameter("id"));
-            ApplicationContext context = new ClassPathXmlApplicationContext(
-                    "spring-module.xml");
 
             userBusinessImpl = (UserBusinessImpl) context.getBean("userBusinessImpl");
 
