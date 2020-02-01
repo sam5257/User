@@ -12,22 +12,38 @@ import java.util.ArrayList;
 @Component
 public class DatabaseOperations implements IDatabaseOperations{
 
-    Connection con = null;
+    private static Connection con;
     PreparedStatement st =null;
     final static Logger logger = Logger.getLogger(DatabaseOperations.class);
+
+    static {
+        try {
+            con =  DatabaseConnection.initializeDatabase();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Response insertUser(UserInfo userInfo) {
         // Initialize the database
         try {
 
-            con = DatabaseConnection.initializeDatabase();
-         st = con.prepareStatement(Constants.INSERT_QUERY);
-        st.setString(1, userInfo.getFirstName());
-        st.setString(2, userInfo.getLastName());
-        st.setString(3, userInfo.getEmail());
-        st.setString(4, userInfo.getDate());
+            logger.info(userInfo+ "  "+Thread.currentThread().getState());
 
-        st.executeUpdate();
+
+            synchronized (this) {
+
+                st = con.prepareStatement(Constants.INSERT_QUERY);
+                st.setString(1, userInfo.getFirstName());
+                st.setString(2, userInfo.getLastName());
+                st.setString(3, userInfo.getEmail());
+                st.setString(4, userInfo.getDate());
+
+                st.executeUpdate();
+
+            }
 
         }
         catch (SQLIntegrityConstraintViolationException e)
@@ -39,9 +55,7 @@ public class DatabaseOperations implements IDatabaseOperations{
                 return Response.FALSE;
         }
         catch (SQLException e) {
-            logger.error("Inside insertUser method",e);
-            return Response.FALSE;
-        } catch (ClassNotFoundException e) {
+            logger.error(userInfo);
             logger.error("Inside insertUser method",e);
             return Response.FALSE;
         }

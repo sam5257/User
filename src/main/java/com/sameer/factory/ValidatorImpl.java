@@ -1,15 +1,14 @@
-package com.sameer.business;
+package com.sameer.factory;
 
 import com.sameer.model.UserInfo;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.regex.Pattern;
 
 
-@Component("validator")
-public class ValidatorImpl  implements  IValidator{
-    @Override
+
+public class ValidatorImpl  implements IValidator {
+
     public boolean lengthValidator(UserInfo userInfo) {
         String firstName=userInfo.getFirstName();
         String lastName=userInfo.getLastName();
@@ -19,7 +18,6 @@ public class ValidatorImpl  implements  IValidator{
           return false;
     }
 
-    @Override
     public boolean emptyFieldValidator(UserInfo userInfo) {
         String firstName = userInfo.getFirstName();
         String lastName = userInfo.getLastName();
@@ -35,7 +33,6 @@ public class ValidatorImpl  implements  IValidator{
         }
     }
 
-    @Override
     public  boolean isValidEmail(UserInfo userInfo)
     {   String email=userInfo.getEmail();
         String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\."+
@@ -49,10 +46,13 @@ public class ValidatorImpl  implements  IValidator{
         return pat.matcher(email).matches();
     }
 
-    @Override
     public boolean checkDuplicate(UserInfo userInfo) {
 
         return false;
     }
 
+    @Override
+    public boolean validate(UserInfo userInfo) {
+        return false;
+    }
 }

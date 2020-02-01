@@ -1,4 +1,4 @@
-package com.sameer.business;
+package com.sameer.util;
 
 import com.sameer.model.UserInfo;
 import org.apache.log4j.Logger;
@@ -19,6 +19,7 @@ public class CacheManager {
 
         Integer key = userInfo.getId();
         cache.put(key, userInfo);
+
     }
 
 

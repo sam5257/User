@@ -1,5 +1,7 @@
 package com.sameer.database;
 
+import org.springframework.context.annotation.PropertySource;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -10,6 +12,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 // This class can be used to initialize the database connection
+@PropertySource("classpath:db.properties")
 public class DatabaseConnection {
 
     private static DatabaseConnection databaseConnection=null;
@@ -69,8 +72,10 @@ public class DatabaseConnection {
                 return  con;
             }
             else {
-                databaseConnection=new DatabaseConnection();
-                return con;
+                synchronized (DatabaseConnection.class) {
+                    databaseConnection = new DatabaseConnection();
+                    return con;
+                }
             }
     }
 

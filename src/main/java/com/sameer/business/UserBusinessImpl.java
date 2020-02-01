@@ -2,7 +2,11 @@ package com.sameer.business;
 
 import com.sameer.database.IDatabaseOperations;
 import com.sameer.exception.UserException;
+import com.sameer.factory.FactoryName;
+import com.sameer.factory.IValidator;
+import com.sameer.factory.ValidatorFactory;
 import com.sameer.model.UserInfo;
+import com.sameer.util.CacheManager;
 import com.sameer.util.Response;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,8 +16,6 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class UserBusinessImpl implements IUserBusiness {
@@ -21,62 +23,55 @@ public class UserBusinessImpl implements IUserBusiness {
 
     private final static Logger logger = Logger.getLogger(UserBusinessImpl.class);
 
-    private IValidator validator;
-
-    private IDatabaseOperations databaseOperations;
+    private IDatabaseOperations databaseOperations;` `
 
     private CacheManager cacheManager;
 
     @Autowired
-    public void setDatabaseOperation(IDatabaseOperations databaseOperations) {
+    private void setDatabaseOperations(IDatabaseOperations databaseOperations) {
         this.databaseOperations = databaseOperations;
     }
 
     @Autowired
-    public void setValidator(IValidator validator) {
-        this.validator = validator;
+    private void setCacheManager(CacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }
-
-    @Autowired
-    public void setcacheManager(CacheManager cacheManager)
-    {
-        this.cacheManager=cacheManager;
-    }
-
-
 
 
     public Response saveUser(UserInfo userInfo) throws UserException {
+
         // UserInfoDTO userInfoDTO=new UserInfoDTO();
         userInfo.setFirstName(userInfo.getFirstName());
         userInfo.setLastName(userInfo.getLastName());
         userInfo.setEmail(userInfo.getEmail());
         userInfo.setDate(userInfo.getDate());
 
-        if(validator.checkDuplicate(userInfo))
-        {
-
+        Response response = null;
+        if (validateUser(userInfo)) {
+            response = databaseOperations.insertUser(userInfo);
         }
+        return response;
+    }
+
+    private boolean validateUser(UserInfo userInfo) throws UserException {
+
+        IValidator validator = null;
+
+
+        validator = ValidatorFactory.getValidator(FactoryName.NAME);
 
         //if validator returns false the throw new UserException
-        if (validator.lengthValidator(userInfo)) {   //make operations on user
-
-            throw new UserException("Length Validate fails");
-
+        if (!validator.validate(userInfo)) {   //make operations on user
+            throw new UserException("Length Validation fails");
         }
 
-        if (validator.emptyFieldValidator(userInfo)) {
+        validator = ValidatorFactory.getValidator(FactoryName.EMAIL);
 
-            throw new UserException("Empty Field");
-
-        }
-
-        if (!validator.isValidEmail(userInfo)) {
+        if (!validator.validate(userInfo)) {
             throw new UserException("Email not valid");
         }
 
-
-        return  databaseOperations.insertUser(userInfo);
+        return true;
     }
 
     public ArrayList<UserInfo> retreiveUser() {
@@ -123,12 +118,11 @@ public class UserBusinessImpl implements IUserBusiness {
 
         logger.info("inside getAge method");
 
-        int age = 0;
         LocalDate currentDate = LocalDate.now();
         LocalDate dateOfBirth = LocalDate.parse(dob);
         Period diff = Period.between(dateOfBirth, currentDate);
 
-        age = diff.getYears();
+        int age = diff.getYears();
 
         logger.info("leaving getAge method");
         return age;
@@ -142,13 +136,11 @@ public class UserBusinessImpl implements IUserBusiness {
 
     public UserInfo retrieveUserWithId(int id) {
         UserInfo userInfo;
-        boolean available=cacheManager.checkCache(id);
-        if (available)
-        {  userInfo=cacheManager.returnCache(id);
+        boolean available = cacheManager.checkCache(id);
+        if (available) {
+            userInfo = cacheManager.returnCache(id);
 
-        }
-        else
-            {
+        } else {
             userInfo = databaseOperations.retrieveSingleUser(id);
             cacheManager.insertCache(userInfo);
         }
@@ -156,7 +148,6 @@ public class UserBusinessImpl implements IUserBusiness {
         userInfo.setAge(age);
         return userInfo;
     }
-
 
 
     public boolean deleteUser(int id) {

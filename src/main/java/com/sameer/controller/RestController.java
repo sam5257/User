@@ -42,7 +42,7 @@ public class RestController extends HttpServlet {
 
             if (userResponse==Response.TRUE) {
 
-                message.setMessage("user info saved");
+                message.setMessage(userInfo.getEmail() + " info saved");
 
             }
             else if(userResponse==Response.INVALID_EMAIL)

@@ -3,7 +3,9 @@ package com.sameer.controller;
 import com.sameer.business.IUserBusiness;
 import com.sameer.business.UserBusinessImpl;
 import com.sameer.model.UserInfo;
+import com.sameer.util.AppConfig;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.servlet.ServletException;
@@ -15,13 +17,16 @@ import java.util.ArrayList;
 
 public class Retreive extends HttpServlet {
 
+
+    private static ApplicationContext context;
    private IUserBusiness userBusinessImpl;
     protected void doPost(HttpServletRequest request,
                           HttpServletResponse response)
             throws ServletException, IOException {
 
-        ApplicationContext context = new ClassPathXmlApplicationContext(
-                "spring-module.xml");
+
+
+        context = new AnnotationConfigApplicationContext(AppConfig.class);
 
         userBusinessImpl = (UserBusinessImpl) context.getBean("userBusinessImpl");
 

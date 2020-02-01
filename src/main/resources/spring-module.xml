@@ -8,6 +8,6 @@
         <property name="validator" ref="validator" />
     </bean>
     <bean id="jdbcDatabaseOperation" class="com.sameer.database.DatabaseOperations"></bean>
-    <bean id="validator" class="com.sameer.business.ValidatorImpl"></bean>
+    <bean id="validator" class="com.sameer.factory.ValidatorImpl"></bean>
 
 </beans>
